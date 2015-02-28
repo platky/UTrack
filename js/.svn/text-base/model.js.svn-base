@@ -1,0 +1,286 @@
+'use strict';
+
+var ACTIVITY_DATA_ADDED_EVENT = 'ACTIVITY_DATA_ADDED_EVENT';
+var ACTIVITY_DATA_REMOVED_EVENT = 'ACTIVITY_DATA_REMOVED_EVENT';
+
+var GRAPH_SELECTED_EVENT = 'GRAPH_SELECTED_EVENT';
+
+/**
+ * Represents a single activity data point.
+ * @param activityType The type of activity. A string
+ * @param healthMetricsDict A dictionary of different health metrics. The key is the
+ * health data type (e.g., energy level, stress level, etc.), while the value is
+ * the value the user gave to that activity.
+ * @param activityDurationInMinutes A number
+ * @constructor
+ */
+var ActivityData = function(activityType, healthMetricsDict, activityDurationInMinutes) {
+    this.activityType = activityType;
+    this.activityDataDict = healthMetricsDict;
+    this.activityDurationInMinutes = activityDurationInMinutes
+};
+
+/**
+ * An object which tracks all of the data
+ * @constructor
+ */
+var ActivityStoreModel = function() {
+    console.log("ActivityStoreModel initialized");
+    this.listeners = []; //array of listeners for this model
+    this.activityData = []; //array of ActivityData objects
+
+};
+
+// _ is the Underscore library
+// This extends the JavaScript prototype with additional methods
+// This is a common idiom for defining JavaScript classes
+_.extend(ActivityStoreModel.prototype, {
+
+    /**
+     * Add a listener to the listeners we track
+     * @param listener The listener is a callback function with the following signature:
+     * (eventType, eventTime, activityData) where eventType is a string indicating
+     * the event type (one of ACTIVITY_DATA_ADDED_EVENT or ACTIVITY_DATA_REMOVED_EVENT), and
+     * activityData the ActivityData added or removed.
+     */
+    addListener: function(listener) {
+        // verify 'this' works with extend
+        this.listeners.push(listener);
+    },
+
+    /**
+     * Should remove the given listener.
+     * @param listener
+     */
+    removeListener: function(listener) {
+        // finds the index of given listener(if exists) and splices it out
+        var index = this.listeners.lastIndexOf(listener);
+        if(index > -1) {
+            this.listeners.splice(index,1);
+        }
+    },
+
+    /**
+     * Should add the given data point, and alert listeners that a new data point has
+     * been added.
+     * @param activityDataPoint
+     */
+    addActivityDataPoint: function(activityDataPoint) {
+        console.log("adding activity");
+        this.activityData.push(activityDataPoint);
+        return ACTIVITY_DATA_ADDED_EVENT;
+    },
+
+    /**
+     * Should remove the given data point (if it exists), and alert listeners that
+     * it was removed. It should not alert listeners if that data point did not
+     * exist in the data store
+     * @param activityDataPoint
+     */
+    removeActivityDataPoint: function(activityDataPoint) {
+        var index = this.ActivityData.lastIndexOf(activityDataPoint);
+        if(index > -1) {
+            this.ActivityData.splice(index,1);
+            return ACTIVITY_DATA_REMOVED_EVENT;
+        } else {
+            //data point did not exist
+        }
+    },
+
+    /**
+     * Should return an array of all activity data points
+     */
+    getActivityDataPoints: function() {
+        return this.activityData;
+    },
+    
+    getAvgEnergy: function(checkType) {
+        var curEnergy=0;
+        var count=0;
+        var i;
+        for (i =0; i <this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                curEnergy += parseInt(this.activityData[i].activityDataDict.energyLevel);
+                count ++;
+            }
+        }
+        var total = curEnergy / count;
+        return total;
+    },
+    
+    getAvgStress: function(checkType) {
+        var curStress=0;
+        var count=0;
+        var i;
+        for (i =0; i <this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                curStress += parseInt(this.activityData[i].activityDataDict.stressLevel);
+                count +=1;
+            }
+        }
+        return curStress/count;
+    },
+    
+    getAvgHappiness: function(checkType) {
+        var curHappy=0;
+        var count=0;
+        var i;
+        for (i =0; i <this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                curHappy += parseInt(this.activityData[i].activityDataDict.happinessLevel);
+                count +=1;
+            }
+        }
+        return curHappy/count;
+    },
+    
+    getAvgTime: function(checkType) {
+        var curTime=0;
+        var count=0;
+        var i;
+        for (i =0; i <this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                curTime += parseInt(this.activityData[i].activityDurationInMinutes);
+                count +=1;
+            }
+        }
+        return curTime/count;
+    },
+    
+    
+    getTtlTime: function(checkType) {
+        var curTime=0;
+        var i;
+        for (i =0; i <this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                curTime += parseInt(this.activityData[i].activityDurationInMinutes);
+            }
+        }
+        return curTime;
+    },
+    
+    isDataEntered: function(checkType) {
+        var i;
+        for (i =0; i<this.activityData.length; i++) {
+            if(this.activityData[i].activityType == checkType) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+});
+
+/**
+ * The GraphModel tracks what the currently selected graph is.
+ * You should structure your architecture so that when the user chooses
+ * a new graph, the event handling code for choosing that graph merely
+ * sets the new graph here, in the GraphModel. The graph handling code
+ * should then update to show the selected graph, along with any components
+ * necessary to configure that graph.
+ * @constructor
+ */
+var GraphModel = function() {
+    this.listeners = [];
+    this.graphs = [];
+    this.curGraph;
+};
+
+_.extend(GraphModel.prototype, {
+
+    /**
+     * Add a listener to the listeners we track
+     * @param listener The listener is a callback function with the following signature:
+     * (eventType, eventTime, eventData) where eventType is a string indicating
+     * the event type (specifically, GRAPH_SELECTED_EVENT),
+     * and eventData indicates the name of the new graph.
+     */
+    addListener: function(listener) {
+        this.listeners.push(listener);
+    },
+
+    /**
+     * Should remove the given listener.
+     * @param listener
+     */
+    removeListener: function(listener) {
+        var index = this.listeners.lastIndexOf(listener);
+        if(index > -1) {
+            this.listeners.splice(index,1);
+        }
+    },
+
+    /**
+     * Returns a list of graphs (strings) that can be selected by the user
+     */
+    getAvailableGraphNames: function() {
+        return graphs;
+    },
+
+    /**
+     * Should return the name of the currently selected graph. There should
+     * *always* be one graph that is currently available.
+     */
+    getNameOfCurrentlySelectedGraph: function() {
+        return curGraph;
+    },
+
+    /**
+     * Changes the currently selected graph to the graph name given. Should
+     * broadcast an event to all listeners that the graph changed.
+     * @param graphName
+     */
+    selectGraph: function(graphName) {
+        //mostly handled within the view since most of it pertains to view
+        console.log("Selecting a graph");
+        if(this.graphs.lastIndexOf(graphName) <0 ) {
+            return false;
+        }
+        this.curGraph=graphName;
+        classes.ManualSelect(graphName); //not sure why this is triggering errors?
+        return GRAPH_SELECTED_EVENT;
+    },
+    
+    addGraph: function(givenGraph) {
+        if(this.curGraph == "") {
+            this.curGraph=givenGraph;
+        }
+        this.graphs.push(givenGraph);
+    }
+
+});
+/**
+ * Will generate a number of random data points and add them to the model provided.
+ * If numDataPointsToGenerate is not provided, will generate and add 100 data points.
+ * @param activityModel The model to add data to
+ * @param numDataPointsToGenerate The number of points to generate.
+ *
+ * Example:
+ *
+ * generateFakeData(new ActivityStoreModel(), 10);
+ */
+function generateFakeData(activityModel, numDataPointsToGenerate) {
+    var fakeActivities = [];
+    _.times(
+        5,
+        function() {
+            fakeActivities.push("Activity " + (fakeActivities.length+1));
+        }
+    );
+    numDataPointsToGenerate = (!_.isNumber(numDataPointsToGenerate) || numDataPointsToGenerate < 0) ? 100 : numDataPointsToGenerate;
+    _.times(
+        numDataPointsToGenerate,
+        function() {
+            var activityDataPoint = new ActivityData(
+                fakeActivities[_.random(fakeActivities.length-1)],
+                {
+                    energyLevel: _.random(10),
+                    stressLevel: _.random(10),
+                    happinessLevel: _.random(10)
+                },
+                _.random(60)
+            );
+            activityModel.addActivityDataPoint(activityDataPoint);
+        }
+    );
+}

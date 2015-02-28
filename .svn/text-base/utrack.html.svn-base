@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>UTrack - Track/Analyze your data</title>
+    <link rel="stylesheet" href="css/ext/bootstrap.css"/>
+    <link rel="stylesheet" href="css/utrack.css"/>
+</head>
+<body>
+
+    <nav id="curNav" class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="utitle"><b>UTrack</b></a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active" id="inputNav"><a href="#">Input</a></li>
+                    <li class="" id="analysisNav"><a href="#">Analysis</a></li>
+                </ul>
+                <p class="navbar-text">Track and analyze data that matters to you!</p>
+            </div>
+        </div>
+    </nav>
+    
+<div id="app_container" class="container">
+
+
+    <div id="input_div">
+        <!-- Put HTML here to support user input of data -->
+        <!--Testing input Div-->
+        
+        <form class="form-horizontal">
+        <fieldset>
+        <legend>Fill Out Activity Form</legend>
+            <div class="form-group" id="error" style="display: none">
+                <div class="col-sm-1">
+                &nbsp
+                </div>
+                <span id="errorMes" class="help-block" ></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="activities">Activity: </label>
+                <div class="col-sm-5">
+                    <select class="form-control" id="activities">
+                        <option>Schoolwork</option>
+                        <option>Studying</option>
+                        <option>Writing Code</option>
+                        <option>Video Games</option>
+                        <option>Playing Sports</option>
+                        <option>Attending Lecture</option>
+                        <option>Attending Lab</option>
+                        <option>Watching TV</option>
+                        <option>Makin' Bank</option>
+                        <option>Gettin' Swole</option>
+                    </select>
+                </div>
+            </div>
+            <div id="energyDiv" class="form-group">
+                <label class="col-sm-2 control-label" for="energy">Energy Level: </label>
+                <div class="col-sm-2">
+                    <input id="energy" name="energy" type="number" class="form-control" min="1" max="5" placeholder="0">
+                </div>
+            </div>
+            <div id="stressDiv" class="form-group">
+                <label class="col-sm-2 control-label" for="stress">Stress Level: </label>
+                <div class="col-sm-2">
+                    <input id="stress" name="stress" type="number" class="form-control" min="1" max="5" placeholder="0">
+                </div>
+            </div>
+            <div id="happinessDiv" class="form-group">
+                <label class="col-sm-2 control-label" for="happiness">Joy Level: </label>
+                <div class="col-sm-2">
+                    <input id="happiness" name="happiness" type="number" class="form-control" min="1" max="5" placeholder="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="time">Time Spent: </label>
+                <div class="col-sm-2">
+                    <input id="time" name="time" type="number" class="form-control" min="0" placeholder="0">
+                </div>
+                <span id="time-help" class="help-block">Minutes</span>
+            </div>
+            <br>
+            <div id="submitDiv" class="form-group">
+                <label class="col-sm-1 control-label" for="submitBtn"></label>
+                <div class="col-sm-4">
+                    <input id="submitBtn" value="Submit" type="button" class="form-control">
+                </div>
+                
+            </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div id="analysis_div">
+    <legend>Analyze Current Data</legend>
+        <div class="form-group" id="analysis_form">
+            <label class="col-sm-1 control-label" for="views">Select View</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="views">
+                        <option>Table Summary</option>
+                        <option>Scatterplot</option>
+                        <option>Bar Graph</option>
+                    </select>
+                </div>
+                <br>
+                <br>
+                <br>
+            <div class="form-group" style="display: none" id="checkDiv">
+                <label><input type="checkbox" id="energyCheck">&nbsp Energy X&nbsp</label>
+                <label><input type="checkbox" id="stressCheck">&nbsp Stress O&nbsp</label>
+                <label><input type="checkbox" id="happyCheck">&nbsp Happiness +</label>
+            </div>
+         </div>
+    </div>
+
+    <div id="unit_tests">
+        <!-- Keep this here so TAs can run your unit tests -->
+        
+        <a href="unit_tests.html">Run Unit Tests</a>
+    </div>
+
+</div>
+
+<script src="js/ext/underscore.js"></script>
+<script src="js/model.js"></script>
+<script src="js/view.js"></script>
+<script src="js/utrack.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+/* Put any additional CSS here */
+
+#utitle {
+    font-size: 28px;
+}
+
+#energy {
+    size: 20px;
+}
+
+#submitBtn {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+#submitBtn:hover,
+#submitBtn:focus,
+#submitBtn.focus,
+#submitBtn:active,
+#submitBtn.active{
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+/*align this thing to bottom so its not obtrusive*/
+#unit_tests {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
